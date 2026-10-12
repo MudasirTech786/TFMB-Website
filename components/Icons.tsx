@@ -37,10 +37,12 @@ export function Icon({
   name,
   size = 20,
   filled = false,
+  className,
 }: {
   name: IconName;
   size?: number;
   filled?: boolean;
+  className?: string;
 }) {
   const common = {
     width: size,
@@ -52,6 +54,7 @@ export function Icon({
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     "aria-hidden": true as const,
+    className,
   };
   const paths: Record<IconName, React.ReactNode> = {
     search: (
