@@ -214,14 +214,13 @@ export default function ExploreCities() {
             {[...cities, ...cities, ...cities].map((city, index) => (
               <a
                 className={`city-card city-${city.slug}`}
-                href="#search"
+                href="/proposals"
                 key={`${city.slug}-${index}`}
                 aria-label={`Explore profiles in ${city.name}`}
                 aria-hidden={index < cities.length || index >= cities.length * 2}
                 tabIndex={index < cities.length || index >= cities.length * 2 ? -1 : undefined}
                 data-city-slug={city.slug}
               >
-                {/* TODO: Preselect this city in Profile Search when city filtering is connected. */}
                 <span className="city-icon">
                   {city.art
                     ? <span className="city-art" style={{ "--city-art": `url("${city.art}")` } as React.CSSProperties} />

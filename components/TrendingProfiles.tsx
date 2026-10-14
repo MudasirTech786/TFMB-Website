@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { trendingProfiles } from "../lib/trendingData";
-import type { TrendingProfile } from "../lib/trendingData";
+import type { PublicTrendingProfile } from "../lib/publicTrendingProfiles";
 import TrendingProfileCard from "./TrendingProfileCard";
 import { Icon } from "./Icons";
 
@@ -24,7 +23,13 @@ const SPEED = 40;
  * - pauses while hovered (CSS) or touched (animationPlayState)
  * - disabled entirely under prefers-reduced-motion
  */
-export default function TrendingProfiles({ items = trendingProfiles }: { items?: TrendingProfile[] }) {
+export default function TrendingProfiles({
+  profiles,
+  error,
+}: {
+  profiles: PublicTrendingProfile[];
+  error: boolean;
+}) {
   const marqueeRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +48,6 @@ export default function TrendingProfiles({ items = trendingProfiles }: { items?:
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
-
-  if (items.length === 0) return null;
 
   const pause = () => {
     const m = marqueeRef.current;
@@ -65,30 +68,38 @@ export default function TrendingProfiles({ items = trendingProfiles }: { items?:
           <span className="trend-rule" aria-hidden="true"><i /><b /><i /></span>
         </header>
 
-        <div
-          className="trend-viewport"
-          role="region"
-          aria-label="Trending profiles showcase"
-          onTouchStart={pause}
-          onTouchEnd={resume}
-          onTouchCancel={resume}
-        >
-          <div ref={marqueeRef} className="trend-marquee">
-            <div ref={setRef} className="trend-group">
-              {items.map((p) => (
-                <TrendingProfileCard key={p.id} profile={p} />
-              ))}
-            </div>
-            <div className="trend-group" aria-hidden="true">
-              {items.map((p) => (
-                <TrendingProfileCard key={p.id} profile={p} />
-              ))}
+        {profiles.length > 0 ? (
+          <div
+            className="trend-viewport"
+            role="region"
+            aria-label="Trending profiles showcase"
+            onTouchStart={pause}
+            onTouchEnd={resume}
+            onTouchCancel={resume}
+          >
+            <div ref={marqueeRef} className="trend-marquee">
+              <div ref={setRef} className="trend-group">
+                {profiles.map((profile) => (
+                  <TrendingProfileCard key={profile.id} profile={profile} variant="directory" showMudasirContact />
+                ))}
+              </div>
+              <div className="trend-group" aria-hidden="true">
+                {profiles.map((profile) => (
+                  <TrendingProfileCard key={profile.id} profile={profile} variant="directory" showMudasirContact />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <p className="trending-state" role="status">
+            {error
+              ? "Profiles are temporarily unavailable. Please try again shortly."
+              : "No profiles are available at the moment."}
+          </p>
+        )}
 
         <div className="trend-cta-wrap">
-          <a className="trend-cta" href="#profiles">View All Profiles <Icon name="arrow" size={16} /></a>
+          <a className="trend-cta" href="/proposals">View All Profiles <Icon name="arrow" size={16} /></a>
         </div>
       </div>
     </section>

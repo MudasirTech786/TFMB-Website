@@ -44,8 +44,7 @@ const services = [
   },
 ];
 
-const contactUrl =
-  "https://wa.me/?text=Hello%2C%20I%27d%20like%20to%20learn%20more%20about%20Trust%20Forever.";
+const whatsappNumber = "923022525228";
 
 export default function ServicesPage() {
   return (
@@ -107,7 +106,9 @@ export default function ServicesPage() {
 
                     <a
                       className="button service-card-cta"
-                      href={contactUrl}
+                      href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+                        `Hello, I'd like to ask about the ${service.plan} ${service.name} plan (${service.duration}).`,
+                      )}`}
                       target="_blank"
                       rel="noreferrer"
                       aria-label={`Contact us about the ${service.duration} ${service.name} plan`}

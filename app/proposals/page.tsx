@@ -42,15 +42,17 @@ export default function ProposalsPage() {
                 href="/proposals/male"
                 aria-label="Explore male profiles"
               >
-                <span className="proposal-gender-overlay" aria-hidden="true" />
                 <ProposalGenderAvatar variant="male" />
+                <span className="proposal-gender-overlay" aria-hidden="true" />
                 <span className="proposal-gender-content">
-                  <span className="proposal-gender-kicker">
-                    THOUGHTFUL INTRODUCTIONS
+                  <span className="proposal-gender-badge">
+                    <Icon name="user" size={15} filled />
+                    FOR MEN
                   </span>
                   <span className="proposal-gender-title">Male Proposals</span>
+                  <span className="proposal-gender-divider" aria-hidden="true" />
                   <span className="proposal-gender-description">
-                    Explore profiles of eligible men from Pakistan and around
+                    Discover profiles of eligible men from Pakistan and around
                     the world.
                   </span>
                   <span className="proposal-gender-cta">
@@ -64,13 +66,15 @@ export default function ProposalsPage() {
                 href="/proposals/female"
                 aria-label="Explore female profiles"
               >
-                <span className="proposal-gender-overlay" aria-hidden="true" />
                 <ProposalGenderAvatar variant="female" />
+                <span className="proposal-gender-overlay" aria-hidden="true" />
                 <span className="proposal-gender-content">
-                  <span className="proposal-gender-kicker">
-                    THOUGHTFUL INTRODUCTIONS
+                  <span className="proposal-gender-badge">
+                    <Icon name="user" size={15} filled />
+                    FOR WOMEN
                   </span>
                   <span className="proposal-gender-title">Female Proposals</span>
+                  <span className="proposal-gender-divider" aria-hidden="true" />
                   <span className="proposal-gender-description">
                     Discover profiles of eligible women from Pakistan and
                     around the world.

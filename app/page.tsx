@@ -5,13 +5,16 @@ import { ProfileSearchProvider } from "../components/ProfileSearchContext";
 import ExploreCities from "../components/ExploreCities";
 import IntroProfiles from "../components/intro";
 import TrendingProfiles from "../components/TrendingProfiles";
+import { fetchPublicTrendingProfiles } from "../lib/publicTrendingProfiles";
 import SuccessStories from "../components/SuccessStories";
 import StatsSection from "../components/StatsSection";
 import Matchmakers from "../components/Matchmakers";
 import HomepageMotion from "../components/HomepageMotion";
 import Footer from "../components/Footer";
 
-export default function Home() {
+export default async function Home() {
+  const { profiles, error } = await fetchPublicTrendingProfiles();
+
   return (
     <>
       <Navbar />
@@ -22,7 +25,7 @@ export default function Home() {
           <ProfileSearch />
           <ExploreCities />
           <IntroProfiles />
-          <TrendingProfiles />
+          <TrendingProfiles profiles={profiles} error={error} />
           <SuccessStories />
           <StatsSection />
           <Matchmakers />

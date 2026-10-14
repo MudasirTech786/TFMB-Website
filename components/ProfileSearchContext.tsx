@@ -5,9 +5,8 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 export interface ProfileFilters {
   lookingFor: string;
   maritalStatus: string;
-  education: string;
-  cast: string;
-  location: string;
+  sect: string;
+  search: string;
 }
 
 interface ProfileSearchState {
@@ -22,9 +21,8 @@ export function ProfileSearchProvider({ children }: { children: ReactNode }) {
   const [filters, setFilters] = useState<ProfileFilters>({
     lookingFor: "",
     maritalStatus: "",
-    education: "",
-    cast: "",
-    location: "",
+    sect: "",
+    search: "",
   });
   const [hasSearched, setHasSearched] = useState(false);
 

@@ -50,7 +50,7 @@ export default function Matchmakers() {
             listen, understand what matters to you, and guide you and your
             family with care.
           </p>
-          <a className="matchmakers-team-link" href="mailto:hello@trustforever.pk">
+          <a className="matchmakers-team-link" href="mailto:trustforevermarriagebureau@gmail.com">
             Meet our team
             <Icon name="arrow" size={17} />
           </a>
@@ -89,7 +89,7 @@ export default function Matchmakers() {
           </span>
           <a
             className="matchmakers-whatsapp-button"
-            href="https://wa.me/?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation."
+            href="https://wa.me/923022525228?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation."
             target="_blank"
             rel="noreferrer"
           >

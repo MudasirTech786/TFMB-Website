@@ -21,7 +21,7 @@ export default function Hero() {
             their life partners through a trusted, professional and personalized
             matchmaking service.
           </p>
-          <a href="#search" className="button button-gold">
+          <a href="#search" className="button button-gold hero-journey-cta">
             Start Your Journey <Icon name="arrow" size={17} />
           </a>
           <div className="hero-note"></div>

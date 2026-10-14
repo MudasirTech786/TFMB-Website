@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Icon } from "./Icons";
 import { useProfileSearch, type ProfileFilters } from "./ProfileSearchContext";
 
@@ -11,51 +12,19 @@ interface MenuOption {
   value: string;
 }
 
-interface MenuGroup {
-  label: string;
-  options: MenuOption[];
-}
-
-const communities = [
-  "Rajput",
-  "Jutt",
-  "Arain",
-  "Gujjar",
-  "Sheikh",
-  "Syed",
-  "Mughal",
-  "Malik",
-  "Awan",
-  "Chaudhry",
-  "Butt",
-  "Abbasi",
-  "Qureshi",
-  "Khokhar",
-  "Dogar",
-];
-
-const locationGroups: MenuGroup[] = [
-  { label: "Punjab", options: ["Lahore", "Rawalpindi", "Faisalabad", "Multan", "Gujranwala", "Sialkot", "Bahawalpur"].map((city) => ({ label: city, value: city })) },
-  { label: "Sindh", options: ["Karachi", "Hyderabad", "Sukkur", "Larkana", "Mirpur Khas"].map((city) => ({ label: city, value: city })) },
-  { label: "Khyber Pakhtunkhwa", options: ["Peshawar", "Abbottabad", "Mardan", "Mingora", "Kohat"].map((city) => ({ label: city, value: city })) },
-  { label: "Balochistan", options: ["Quetta", "Gwadar", "Turbat", "Khuzdar", "Chaman"].map((city) => ({ label: city, value: city })) },
-];
-
 function SearchSelect({
   label,
   icon,
   value,
   placeholder,
   options,
-  groups,
   onChange,
 }: {
   label: string;
   icon: IconName;
   value: string;
   placeholder: string;
-  options?: MenuOption[];
-  groups?: MenuGroup[];
+  options: MenuOption[];
   onChange: (value: string) => void;
 }) {
   const id = useId();
@@ -63,7 +32,7 @@ function SearchSelect({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [open, setOpen] = useState(false);
-  const allOptions = [{ label: placeholder, value: "" }, ...(options ?? groups?.flatMap((group) => group.options) ?? [])];
+  const allOptions = [{ label: placeholder, value: "" }, ...options];
   const selectedIndex = Math.max(0, allOptions.findIndex((option) => option.value === value));
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
   const selectedLabel = allOptions[selectedIndex]?.label ?? placeholder;
@@ -134,7 +103,7 @@ function SearchSelect({
 
   return (
     <div
-      className={`search-field${open ? " is-open" : ""}${groups ? " search-location" : ""}`}
+      className={`search-field${open ? " is-open" : ""}`}
       onBlur={(event: FocusEvent<HTMLDivElement>) => {
         if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) setOpen(false);
       }}
@@ -169,25 +138,13 @@ function SearchSelect({
       </button>
       {open && (
         <div
-          className={`search-options${groups ? " search-location-options" : ""}`}
+          className="search-options"
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={`${id}-label`}
         >
           {renderOption(allOptions[0], 0)}
-          {groups
-            ? groups.map((group) => (
-              <div className="search-option-group" key={group.label}>
-                <span className="search-option-group-label"><i />{group.label}</span>
-                <div className="search-city-grid">
-                  {group.options.map((option) => {
-                    const index = allOptions.findIndex((item) => item.value === option.value);
-                    return renderOption(option, index);
-                  })}
-                </div>
-              </div>
-            ))
-            : options?.map((option, index) => renderOption(option, index + 1))}
+          {options.map((option, index) => renderOption(option, index + 1))}
         </div>
       )}
     </div>
@@ -195,13 +152,13 @@ function SearchSelect({
 }
 
 export default function ProfileSearch() {
+  const router = useRouter();
   const { searchProfiles } = useProfileSearch();
   const [filters, setFilters] = useState<ProfileFilters>({
     lookingFor: "",
     maritalStatus: "",
-    education: "",
-    cast: "",
-    location: "",
+    sect: "",
+    search: "",
   });
 
   function updateFilter(field: keyof ProfileFilters, value: string) {
@@ -211,7 +168,13 @@ export default function ProfileSearch() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     searchProfiles(filters);
-    document.querySelector("#profiles")?.scrollIntoView({ behavior: "smooth" });
+
+    const params = new URLSearchParams();
+    if (filters.lookingFor) params.set("gender", filters.lookingFor.toLowerCase());
+    if (filters.maritalStatus) params.set("marital_status", filters.maritalStatus);
+    if (filters.sect.trim()) params.set("sect", filters.sect.trim());
+    if (filters.search.trim()) params.set("search", filters.search.trim());
+    router.push(`/profiles/search?${params.toString()}`);
   }
 
   return (
@@ -219,7 +182,7 @@ export default function ProfileSearch() {
       <div className="search-intro home-section-header">
         <span className="eyebrow home-section-eyebrow">A THOUGHTFUL PLACE TO BEGIN</span>
         <h2 className="home-section-title" id="search-title">Find Your Perfect Match</h2>
-        <p className="home-section-description">Discover sincere profiles based on your preferences, education, community and location.</p>
+        <p className="home-section-description">Discover sincere profiles based on your preferences and selected details.</p>
       </div>
       <form className="search-panel" onSubmit={handleSubmit}>
         <div className="search-panel-head">
@@ -227,12 +190,36 @@ export default function ProfileSearch() {
           <div><strong>Begin with what matters</strong><span>Thoughtful preferences, meaningful introductions.</span></div>
           <span className="search-panel-promise"><Icon name="shield" size={14} /> Considered with care</span>
         </div>
+        <label className="search-field search-text-field" htmlFor="profile-search-text">
+          <span><Icon name="search" size={14} />Profile ID or name</span>
+          <input
+            autoComplete="off"
+            id="profile-search-text"
+            maxLength={255}
+            onChange={(event) => updateFilter("search", event.target.value)}
+            placeholder="e.g. TFMB-124 or a name"
+            type="search"
+            value={filters.search}
+          />
+        </label>
+        <label className="search-field search-text-field" htmlFor="profile-search-sect">
+          <span><Icon name="spark" size={14} />Sect</span>
+          <input
+            autoComplete="off"
+            id="profile-search-sect"
+            maxLength={255}
+            onChange={(event) => updateFilter("sect", event.target.value)}
+            placeholder="e.g. Ahle Tashi, Shia"
+            type="search"
+            value={filters.sect}
+          />
+        </label>
         <SearchSelect
           label="Looking For"
           icon="users"
           value={filters.lookingFor}
           placeholder="Any"
-          options={[{ label: "Male", value: "Male" }, { label: "Female", value: "Female" }]}
+          options={[{ label: "Male", value: "male" }, { label: "Female", value: "female" }]}
           onChange={(value) => updateFilter("lookingFor", value)}
         />
         <SearchSelect
@@ -240,32 +227,13 @@ export default function ProfileSearch() {
           icon="heart"
           value={filters.maritalStatus}
           placeholder="Any status"
-          options={["Never Married", "Married", "Divorced", "Widow / Widower"].map((status) => ({ label: status, value: status }))}
+          options={[
+            { label: "Never Married", value: "unmarried" },
+            { label: "Married", value: "married" },
+            { label: "Divorced", value: "divorced" },
+            { label: "Widow / Widower", value: "widowed" },
+          ]}
           onChange={(value) => updateFilter("maritalStatus", value)}
-        />
-        <SearchSelect
-          label="Education"
-          icon="cap"
-          value={filters.education}
-          placeholder="Any education"
-          options={["Matric", "Intermediate", "Bachelor's", "Master's", "MPhil", "PhD", "Professional Degree"].map((level) => ({ label: level, value: level }))}
-          onChange={(value) => updateFilter("education", value)}
-        />
-        <SearchSelect
-          label="Cast / Community"
-          icon="users"
-          value={filters.cast}
-          placeholder="Any community"
-          options={communities.map((community) => ({ label: community, value: community }))}
-          onChange={(value) => updateFilter("cast", value)}
-        />
-        <SearchSelect
-          label="Location"
-          icon="pin"
-          value={filters.location}
-          placeholder="Anywhere in Pakistan"
-          groups={locationGroups}
-          onChange={(value) => updateFilter("location", value)}
         />
         <div className="search-panel-footer">
           <span><Icon name="shield" size={16} /> Every search is a step toward the right introduction.</span>

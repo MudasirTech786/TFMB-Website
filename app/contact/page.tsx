@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const whatsappUrl =
-  "https://wa.me/?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation.";
+  "https://wa.me/923022525228?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation.";
 
 export default function ContactPage() {
   return (
@@ -72,8 +72,8 @@ export default function ContactPage() {
                       </span>
                       <div>
                         <span className="contact-detail-label">EMAIL</span>
-                        <a href="mailto:hello@trustforever.pk">
-                          hello@trustforever.pk
+                        <a href="mailto:trustforevermarriagebureau@gmail.com">
+                          trustforevermarriagebureau@gmail.com
                         </a>
                       </div>
                     </div>
@@ -89,17 +89,6 @@ export default function ContactPage() {
                       </div>
                     </div>
                   </div>
-
-                  <a
-                    className="contact-whatsapp-link"
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Icon name="whatsapp" size={18} />
-                    Prefer WhatsApp? Chat with our team
-                    <Icon name="arrow" size={15} />
-                  </a>
                 </div>
               </section>
 

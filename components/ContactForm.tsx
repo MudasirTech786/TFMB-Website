@@ -8,8 +8,24 @@ export default function ContactForm() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setNotice(
-      "Message delivery is not connected yet. Your details are still in the form; please contact us directly by email or WhatsApp.",
+    const formData = new FormData(event.currentTarget);
+    const fields = [
+      ["Name", formData.get("name")],
+      ["Email", formData.get("email")],
+      ["Phone", formData.get("phone")],
+      ["Interested in", formData.get("interest")],
+      ["Subject", formData.get("subject")],
+      ["Message", formData.get("message")],
+    ] as const;
+    const message = [
+      "Hello, I'd like to contact Trust Forever.",
+      ...fields
+        .filter(([, value]) => typeof value === "string" && value.trim())
+        .map(([label, value]) => `${label}: ${String(value).trim()}`),
+    ].join("\n");
+
+    window.location.assign(
+      `https://wa.me/923022525228?text=${encodeURIComponent(message)}`,
     );
   }
 

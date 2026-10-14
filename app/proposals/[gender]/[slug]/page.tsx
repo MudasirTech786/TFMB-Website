@@ -7,27 +7,36 @@ import {
   getProposalGenderLabel,
   resolveProposalListing,
 } from "../../../../lib/availableProposals";
-import { getProposalProfilesForListing } from "../../../../lib/proposalProfiles";
+import { searchPublicProfiles } from "../../../../lib/publicTrendingProfiles";
 
 export default async function ProposalListingPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ gender: string; slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { gender, slug } = await params;
+  const [{ gender, slug }, query] = await Promise.all([params, searchParams]);
   const resolved = resolveProposalListing(gender, slug);
 
   if (!resolved) {
     notFound();
   }
 
-  const profiles = getProposalProfilesForListing(
-    resolved.gender,
-    resolved.region.slug,
-    resolved.category.slug,
-  );
+  const cityNames = resolved.region.cities.map(({ city }) => city).join(",");
+  const pageValue = Array.isArray(query.page) ? query.page[0] : query.page;
+  const requestedPage = Number(pageValue ?? 1);
+  const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const { profiles, total, currentPage, lastPage, error } = await searchPublicProfiles({
+    gender: resolved.gender,
+    city: cityNames,
+    category: resolved.category.slug,
+    page,
+    per_page: 24,
+  });
 
   const genderLabel = getProposalGenderLabel(resolved.gender);
+  const pageHref = (nextPage: number) => `/proposals/${resolved.gender}/${slug}?page=${nextPage}`;
 
   return (
     <>
@@ -68,17 +77,34 @@ export default async function ProposalListingPage({
               </div>
             </header>
 
-            <div className="proposal-listing-meta">
-              <span>{profiles.length} profiles</span>
+            {!error && <div className="proposal-listing-meta">
+              <span>{total} {total === 1 ? "profile" : "profiles"}</span>
               <span>{resolved.region.name}</span>
               <span>{resolved.category.name}</span>
-            </div>
+              {lastPage > 1 && <span>Page {currentPage} of {lastPage}</span>}
+            </div>}
 
-            {profiles.length > 0 ? (
+            {error ? (
+              <div className="proposal-empty-state" role="alert">
+                <h2>Proposals are temporarily unavailable</h2>
+                <p>Please try again shortly. No sample profiles are shown when the service is unavailable.</p>
+                <Link className="proposal-back-link" href={`/proposals/${resolved.gender}`}>Browse categories</Link>
+              </div>
+            ) : profiles.length > 0 ? (
               <div className="proposal-list-grid">
                 {profiles.map((profile) => (
-                  <TrendingProfileCard key={profile.id} profile={profile} />
+                  <TrendingProfileCard
+                    key={profile.id}
+                    profile={profile}
+                    variant="directory"
+                    showMudasirContact
+                  />
                 ))}
+                {lastPage > 1 && <nav className="proposal-pagination" aria-label="Profile pages">
+                  {currentPage > 1 && <Link className="proposal-back-link" href={pageHref(currentPage - 1)}>Previous</Link>}
+                  <span>Page {currentPage} of {lastPage}</span>
+                  {currentPage < lastPage && <Link className="proposal-back-link" href={pageHref(currentPage + 1)}>Next</Link>}
+                </nav>}
               </div>
             ) : (
               <div className="proposal-empty-state" role="status">
