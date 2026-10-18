@@ -25,7 +25,7 @@ export default function ContactForm() {
     ].join("\n");
 
     window.location.assign(
-      `https://wa.me/923022525228?text=${encodeURIComponent(message)}`,
+      `https://wa.me/923204793274?text=${encodeURIComponent(message)}`,
     );
   }
 

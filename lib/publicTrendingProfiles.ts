@@ -30,6 +30,14 @@ function nullableString(value: unknown): string | null {
   return typeof value === "string" && value.trim() !== "" ? value.trim() : null;
 }
 
+function publicApiUrl(path: string): string | null {
+  const configuredUrl = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/+$/, "");
+  if (!configuredUrl) return null;
+
+  const apiBaseUrl = /\/api$/i.test(configuredUrl) ? configuredUrl : `${configuredUrl}/api`;
+  return `${apiBaseUrl}${path}`;
+}
+
 function mapProfile(value: unknown): PublicTrendingProfile | null {
   if (!value || typeof value !== "object") return null;
 
@@ -68,11 +76,8 @@ export async function fetchPublicTrendingProfiles(): Promise<{
   profiles: PublicTrendingProfile[];
   error: boolean;
 }> {
-  const baseUrl = process.env.LARAVEL_API_URL?.trim().replace(/\/+$/, "");
-  if (!baseUrl) return { profiles: [], error: true };
-  const endpoint = /\/api$/i.test(baseUrl)
-    ? `${baseUrl}/public/trending-profiles`
-    : `${baseUrl}/api/public/trending-profiles`;
+  const endpoint = publicApiUrl("/public/trending-profiles");
+  if (!endpoint) return { profiles: [], error: true };
 
   try {
     const response = await fetch(endpoint, {
@@ -121,12 +126,8 @@ export async function searchPublicProfiles(filters: PublicProfileSearchFilters):
   lastPage: number;
   error: boolean;
 }> {
-  const baseUrl = process.env.LARAVEL_API_URL?.trim().replace(/\/+$/, "");
-  if (!baseUrl) return { profiles: [], total: 0, currentPage: 1, lastPage: 1, error: true };
-
-  const endpointBase = /\/api$/i.test(baseUrl)
-    ? `${baseUrl}/public/profiles/search`
-    : `${baseUrl}/api/public/profiles/search`;
+  const endpointBase = publicApiUrl("/public/profiles/search");
+  if (!endpointBase) return { profiles: [], total: 0, currentPage: 1, lastPage: 1, error: true };
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
     if ((typeof value === "string" || typeof value === "number") && String(value).trim() !== "") {
@@ -170,9 +171,8 @@ export async function searchPublicProfiles(filters: PublicProfileSearchFilters):
 }
 
 export async function fetchPublicProfile(profileId: string): Promise<PublicTrendingProfile | null> {
-  const baseUrl = process.env.LARAVEL_API_URL?.trim().replace(/\/+$/, "");
-  if (!baseUrl) return null;
-  const endpointBase = /\/api$/i.test(baseUrl) ? `${baseUrl}/public/profiles` : `${baseUrl}/api/public/profiles`;
+  const endpointBase = publicApiUrl("/public/profiles");
+  if (!endpointBase) return null;
 
   try {
     const response = await fetch(`${endpointBase}/${encodeURIComponent(profileId)}`, {

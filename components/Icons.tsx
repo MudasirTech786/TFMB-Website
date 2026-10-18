@@ -27,6 +27,7 @@ export type IconName =
   | "facebook"
   | "instagram"
   | "youtube"
+  | "tiktok"
   | "x"
   | "user"
   | "calendar"
@@ -191,6 +192,9 @@ export function Icon({
         <path d="M22 12s0-4-1-5-9-1-9-1-8 0-9 1-1 5-1 5 0 4 1 5 9 1 9 1 8 0 9-1 1-5 1-5Z" />
         <path d="m10 9 5 3-5 3V9Z" />
       </>
+    ),
+    tiktok: (
+      <path d="M19.6 7.2a6.7 6.7 0 0 1-4.2-1.5v8.1a5.8 5.8 0 1 1-5-5.7v3.2a2.6 2.6 0 1 0 1.8 2.5V2h3.2c.2 2.1 1.9 3.8 4.2 4v1.2Z" />
     ),
     x: (
       <>

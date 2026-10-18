@@ -275,7 +275,7 @@ export default function AboutPage() {
             <div className="tf-about-closing-actions">
               <a
                 className="button button-gold"
-                href="https://wa.me/923022525228?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation."
+                href="https://wa.me/923204793274?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation."
                 target="_blank"
                 rel="noreferrer"
               >

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const whatsappUrl =
-  "https://wa.me/923022525228?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation.";
+  "https://wa.me/923204793274?text=Hello%2C%20I%27d%20like%20a%20free%20matrimonial%20consultation.";
 
 export default function ContactPage() {
   return (

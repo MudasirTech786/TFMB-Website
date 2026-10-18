@@ -87,7 +87,7 @@ export default function TrendingProfileCard({ profile, variant = "image", detail
               </div>
               <a
                 className="home-trend-featured-contact-link"
-                href={`https://wa.me/923022525228?text=${encodeURIComponent(`Need Details ${profile.id}`)}`}
+                href={`https://wa.me/923204793274?text=${encodeURIComponent(`Need Details ${profile.id}`)}`}
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`WhatsApp Mr. Mudasir about profile ${profile.id}`}

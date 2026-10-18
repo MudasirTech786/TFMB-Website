@@ -44,7 +44,7 @@ const services = [
   },
 ];
 
-const whatsappNumber = "923022525228";
+const whatsappNumber = "923204793274";
 
 export default function ServicesPage() {
   return (
