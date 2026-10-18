@@ -83,17 +83,17 @@ export default function TrendingProfileCard({ profile, variant = "image", detail
             <div className="home-trend-featured-contact">
               <div className="home-trend-featured-contact-copy">
                 <span className="home-trend-contact-label">For More Information</span>
-                <p className="home-trend-contact-person">Mr. Mudasir</p>
+                <p className="home-trend-contact-person">Mrs. Humaira</p>
               </div>
               <a
                 className="home-trend-featured-contact-link"
                 href={`https://wa.me/923204793274?text=${encodeURIComponent(`Need Details ${profile.id}`)}`}
                 target="_blank"
                 rel="noreferrer"
-                aria-label={`WhatsApp Mr. Mudasir about profile ${profile.id}`}
+                aria-label={`WhatsApp Mrs. Humaira about profile ${profile.id}`}
               >
                 <Icon name="whatsapp" size={16} />
-                +92 302 2525228
+                +92 320 4793274
               </a>
             </div>
           ) : (
