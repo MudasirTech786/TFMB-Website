@@ -38,30 +38,6 @@ export default function ProposalsPage() {
 
             <div className="proposal-gender-grid">
               <Link
-                className="proposal-gender-card proposal-gender-card-male"
-                href="/proposals/male"
-                aria-label="Explore male profiles"
-              >
-                <ProposalGenderAvatar variant="male" />
-                <span className="proposal-gender-overlay" aria-hidden="true" />
-                <span className="proposal-gender-content">
-                  <span className="proposal-gender-badge">
-                    <Icon name="user" size={15} filled />
-                    FOR MEN
-                  </span>
-                  <span className="proposal-gender-title">Male Proposals</span>
-                  <span className="proposal-gender-divider" aria-hidden="true" />
-                  <span className="proposal-gender-description">
-                    Discover profiles of eligible men from Pakistan and around
-                    the world.
-                  </span>
-                  <span className="proposal-gender-cta">
-                    Explore Male Profiles <Icon name="arrow" size={17} />
-                  </span>
-                </span>
-              </Link>
-
-              <Link
                 className="proposal-gender-card proposal-gender-card-female"
                 href="/proposals/female"
                 aria-label="Explore female profiles"
@@ -81,6 +57,30 @@ export default function ProposalsPage() {
                   </span>
                   <span className="proposal-gender-cta">
                     Explore Female Profiles <Icon name="arrow" size={17} />
+                  </span>
+                </span>
+              </Link>
+
+              <Link
+                className="proposal-gender-card proposal-gender-card-male"
+                href="/proposals/male"
+                aria-label="Explore male profiles"
+              >
+                <ProposalGenderAvatar variant="male" />
+                <span className="proposal-gender-overlay" aria-hidden="true" />
+                <span className="proposal-gender-content">
+                  <span className="proposal-gender-badge">
+                    <Icon name="user" size={15} filled />
+                    FOR MEN
+                  </span>
+                  <span className="proposal-gender-title">Male Proposals</span>
+                  <span className="proposal-gender-divider" aria-hidden="true" />
+                  <span className="proposal-gender-description">
+                    Discover profiles of eligible men from Pakistan and around
+                    the world.
+                  </span>
+                  <span className="proposal-gender-cta">
+                    Explore Male Profiles <Icon name="arrow" size={17} />
                   </span>
                 </span>
               </Link>

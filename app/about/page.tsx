@@ -4,6 +4,7 @@ import "./about.css";
 import { Icon } from "../../components/Icons";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import HomepageMotion from "../../components/HomepageMotion";
 
 export const metadata: Metadata = {
   title: "About Us | Trust Forever",
@@ -105,6 +106,7 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main className="tf-about">
+        <HomepageMotion scope=".tf-about" />
         <section
           className="tf-about-intro home-section-gutter"
           aria-labelledby="about-title"
