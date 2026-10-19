@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 type ProposalGenderAvatarProps = {
@@ -9,14 +8,10 @@ type ProposalGenderAvatarProps = {
 
 const avatarAssets = {
   male: {
-    src: "/images/proposals/male-proposal.jpg",
     video: "/images/proposals/male.mp4",
-    position: "center 31%",
   },
   female: {
-    src: "/images/proposals/female-proposal.jpg",
     video: "/images/proposals/female.mp4",
-    position: "center 30%",
   },
 } as const;
 
@@ -28,44 +23,64 @@ export default function ProposalGenderAvatar({ variant }: ProposalGenderAvatarPr
   useEffect(() => {
     const scene = sceneRef.current;
     const video = videoRef.current;
-    if (!scene || !video || !("IntersectionObserver" in window)) return;
+    if (!scene || !video) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const onPlaying = () => video.setAttribute("data-video-playing", "true");
-    const onPause = () => video.removeAttribute("data-video-playing");
     const onError = () => {
-      video.removeAttribute("data-video-playing");
       video.setAttribute("data-video-failed", "true");
       video.pause();
     };
 
-    video.addEventListener("playing", onPlaying);
-    video.addEventListener("pause", onPause);
     video.addEventListener("error", onError);
+
+    const loadSource = (preload: "metadata" | "none") => {
+      if (video.dataset.videoFailed === "true" || video.hasAttribute("src")) return;
+      video.preload = preload;
+      video.src = avatar.video;
+      video.load();
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      loadSource("none");
+      void video.play().catch(() => {});
+      return () => {
+        video.removeEventListener("error", onError);
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+      };
+    }
+
+    // Fetch metadata before the portrait reaches the viewport so playback can
+    // start promptly, without downloading every video at initial page load.
+    const warmObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        loadSource("metadata");
+        warmObserver.unobserve(scene);
+      }
+    }, { rootMargin: "320px 0px", threshold: 0 });
 
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.target !== scene) continue;
         if (entry.isIntersecting) {
           if (video.dataset.videoFailed === "true") continue;
-          if (!video.hasAttribute("src")) {
-            video.src = avatar.video;
-            video.load();
-          }
+          loadSource("none");
           void video.play().catch(() => {
-            // Keep the poster image visible when autoplay is unavailable.
+            // Leave playback stopped if the browser declines autoplay.
           });
         } else {
           video.pause();
         }
       }
-    }, { threshold: 0.25 });
+    }, { threshold: 0.05 });
 
+    warmObserver.observe(scene);
     observer.observe(scene);
     return () => {
+      warmObserver.disconnect();
       observer.disconnect();
-      video.removeEventListener("playing", onPlaying);
-      video.removeEventListener("pause", onPause);
       video.removeEventListener("error", onError);
       video.pause();
       video.removeAttribute("src");
@@ -75,27 +90,15 @@ export default function ProposalGenderAvatar({ variant }: ProposalGenderAvatarPr
 
   return (
     <div ref={sceneRef} className={`proposal-avatar-scene ${variant}`} aria-hidden="true">
-      <Image
-        src={avatar.src}
-        alt=""
-        fill
-        sizes="(max-width: 760px) 100vw, (max-width: 1420px) 50vw, 680px"
-        className="proposal-avatar-image"
-        style={{ objectPosition: avatar.position }}
-        preload
-      />
       <video
         ref={videoRef}
         className="proposal-avatar-video"
-        data-src={avatar.video}
-        poster={avatar.src}
         muted
         playsInline
         loop
         preload="none"
         tabIndex={-1}
         aria-hidden="true"
-        style={{ objectPosition: avatar.position }}
       />
     </div>
   );
